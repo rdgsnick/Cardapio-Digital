@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel do Garçom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="cozinha.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Pedidos prontos para entrega</h1>
+    <span id="status-conexao" class="status-conexao">conectando...</span>
+  </header>
+
+  <main id="pedidos" class="pedidos"></main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="garcom.js"></script>
+</body>
+</html>

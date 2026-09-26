@@ -1,0 +1,96 @@
+:root {
+  --bg: #1F2A24;
+  --surface: #28362F;
+  --text: #F0EDE4;
+  --muted: #A8B3AA;
+  --accent: #E8B34D;
+  --pronto: #6FA97C;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Fraunces', serif;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(240,237,228,0.1);
+}
+
+.topbar h1 { font-size: 1.3rem; margin: 0; }
+
+.status-conexao {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.status-conexao.online { color: var(--pronto); }
+
+.pedidos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 32px;
+}
+
+.ticket {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 18px 20px;
+  border-left: 4px solid var(--accent);
+}
+
+.ticket.pronto { border-left-color: var(--pronto); opacity: 0.6; }
+
+.ticket-mesa {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ticket-mesa span { color: var(--accent); font-weight: 600; }
+
+.ticket ul {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.ticket li {
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(240,237,228,0.1);
+  font-size: 0.95rem;
+}
+
+.ticket li .obs {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.ticket-btn {
+  width: 100%;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ticket.pronto .ticket-btn {
+  background: var(--pronto);
+  cursor: default;
+}

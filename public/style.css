@@ -1,0 +1,245 @@
+:root {
+  --bg: #1F2A24;
+  --surface: #28362F;
+  --surface-2: #2F3F36;
+  --text: #F0EDE4;
+  --muted: #A8B3AA;
+  --accent: #E8B34D;
+  --accent-dark: #C48F35;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Fraunces', serif;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  border-bottom: 1px solid rgba(240,237,228,0.1);
+}
+
+.mesa {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.mesa span { color: var(--accent); font-weight: 600; }
+
+.nome-restaurante {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px;
+  align-items: start;
+}
+
+/* --- Feed --- */
+
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.card {
+  background: var(--surface);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(240,237,228,0.06);
+}
+
+.card-img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.card-body {
+  padding: 20px 22px 22px;
+}
+
+.card-body h3 {
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.card-body p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 90%;
+}
+
+.card-preco {
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--accent);
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.card-obs {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid rgba(240,237,228,0.1);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 10px 12px;
+  resize: vertical;
+  min-height: 44px;
+  margin-bottom: 14px;
+}
+
+.card-obs::placeholder { color: var(--muted); }
+
+.card-add {
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.card-add:active { background: var(--accent-dark); }
+
+/* --- Carrinho --- */
+
+.carrinho {
+  position: sticky;
+  top: 32px;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid rgba(240,237,228,0.06);
+}
+
+.carrinho h2 {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.carrinho-vazio {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.carrinho-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 16px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.carrinho-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(240,237,228,0.08);
+}
+
+.carrinho-item-info h4 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.carrinho-item-info span.obs {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+.carrinho-item-preco {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+
+.carrinho-item-remover {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0 0 0 8px;
+}
+
+.carrinho-item-remover:hover { color: var(--accent); }
+
+.carrinho-total-linha {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  padding-top: 12px;
+  border-top: 1px solid rgba(240,237,228,0.1);
+  margin-bottom: 16px;
+}
+
+#btn-enviar {
+  width: 100%;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#btn-enviar:disabled {
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/* --- Mobile --- */
+
+@media (max-width: 780px) {
+  .layout {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  .carrinho {
+    position: static;
+  }
+  .card-img {
+    height: 220px;
+  }
+}
