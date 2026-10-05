@@ -1,0 +1,19 @@
+/* Reaproveita a base visual da cozinha e só ajusta o que é diferente aqui */
+@import url('cozinha.css');
+
+/* No painel do garçom, TODO pedido que aparece já é acionável
+   (precisa ser entregue), então o botão não deve ficar escurecido
+   como fica na cozinha pros pedidos já prontos. */
+.ticket.pronto {
+  opacity: 1;
+}
+
+.ticket.pronto .ticket-btn {
+  background: var(--accent);
+  color: var(--bg);
+  cursor: pointer;
+}
+
+.ticket.pronto .ticket-btn:hover {
+  background: var(--accent-dark, #C48F35);
+}

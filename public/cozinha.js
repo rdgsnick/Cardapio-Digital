@@ -1,7 +1,9 @@
 const socket = io(); // conecta automaticamente no mesmo servidor que serviu a página
 
 const pedidosEl = document.getElementById('pedidos');
+const historicoEl = document.getElementById('historico');
 const statusEl = document.getElementById('status-conexao');
+const tabBtns = document.querySelectorAll('.tab-btn');
 
 // Cardápio precisa existir aqui também, só pra traduzir itemId em nome do prato
 const itens = [
@@ -37,6 +39,51 @@ function criarTicket(pedido) {
   return div;
 }
 
+const statusLabels = {
+  novo: { texto: 'Novo', classe: 'status-novo' },
+  pronto: { texto: 'Pronto', classe: 'status-pronto' },
+  entregue: { texto: 'Entregue', classe: 'status-entregue' },
+};
+
+function formatarHora(iso) {
+  return new Date(iso).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// Igual o ticket normal, mas sem botão de ação — só mostra o status atual
+function criarTicketHistorico(pedido) {
+  const div = document.createElement('div');
+  div.className = 'ticket historico-item';
+  div.id = `historico-${pedido.id}`;
+
+  const status = statusLabels[pedido.status] || statusLabels.novo;
+
+  div.innerHTML = `
+    <div class="ticket-mesa">
+      PEDIDO #${pedido.id} — MESA <span>${pedido.mesa}</span>
+      <span class="historico-hora">${formatarHora(pedido.criadoEm)}</span>
+    </div>
+    <ul>
+      ${pedido.itens.map(i => `
+        <li>${nomeDoItem(i.itemId)}${i.obs ? `<span class="obs">"${i.obs}"</span>` : ''}</li>
+      `).join('')}
+    </ul>
+    <span class="status-badge ${status.classe}">${status.texto}</span>
+  `;
+
+  return div;
+}
+
+// Troca de aba — só mostra/esconde, os dados já estão carregados nos dois
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const aba = btn.dataset.tab;
+    pedidosEl.hidden = aba !== 'ativos';
+    historicoEl.hidden = aba !== 'historico';
+  });
+});
+
 async function marcarPronto(id) {
   await fetch(`/api/pedidos/${id}/status`, {
     method: 'PATCH',
@@ -46,16 +93,23 @@ async function marcarPronto(id) {
   // não precisa atualizar a tela aqui — o servidor vai avisar via socket, e todo mundo atualiza junto
 }
 
-// Ao abrir a página, busca os pedidos que já existem
+// Ao abrir a página, busca os pedidos que já existem e preenche as duas abas
 fetch('/api/pedidos')
   .then(res => res.json())
   .then(pedidos => {
-    pedidos.forEach(pedido => pedidosEl.appendChild(criarTicket(pedido)));
+    // Só pedidos que ainda não foram entregues entram na aba "ativos"
+    pedidos
+      .filter(pedido => pedido.status !== 'entregue')
+      .forEach(pedido => pedidosEl.appendChild(criarTicket(pedido)));
+
+    // O histórico continua mostrando todos, entregues inclusive
+    pedidos.slice().reverse().forEach(pedido => historicoEl.appendChild(criarTicketHistorico(pedido)));
   });
 
 // Escuta quando um pedido NOVO chega
 socket.on('novo-pedido', (pedido) => {
   pedidosEl.prepend(criarTicket(pedido));
+  historicoEl.prepend(criarTicketHistorico(pedido));
 });
 
 // Escuta quando um pedido é ATUALIZADO (pronto ou entregue)
@@ -63,11 +117,14 @@ socket.on('pedido-atualizado', (pedido) => {
   const ticketAntigo = document.getElementById(`pedido-${pedido.id}`);
 
   if (pedido.status === 'entregue') {
-    // já foi entregue, some da tela da cozinha
+    // já foi entregue, some da tela de pedidos ativos (mas continua no histórico)
     if (ticketAntigo) ticketAntigo.remove();
   } else if (ticketAntigo) {
     ticketAntigo.replaceWith(criarTicket(pedido));
   }
+
+  const historicoAntigo = document.getElementById(`historico-${pedido.id}`);
+  if (historicoAntigo) historicoAntigo.replaceWith(criarTicketHistorico(pedido));
 });
 
 // Feedback visual de conexão

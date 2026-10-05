@@ -3,13 +3,22 @@ const params = new URLSearchParams(window.location.search);
 const numeroMesa = params.get('mesa') || '--';
 document.getElementById('numero-mesa').textContent = numeroMesa;
 
-// Cardápio de exemplo — depois isso pode vir de um back-end
-const itens = [
-  { id: 1, nome: 'Bruschetta', desc: 'Pão italiano tostado, tomate fresco, manjericão e azeite extra virgem.', preco: 18.90, imagem: 'images/bruschetta.jpg' },
-  { id: 2, nome: 'Risoto de Funghi', desc: 'Arbóreo cremoso, mix de cogumelos frescos e finalizado com parmesão.', preco: 42.00, imagem: 'images/risoto.jpg' },
-  { id: 3, nome: 'Filé ao Molho Madeira', desc: 'Filé mignon grelhado, purê de batatas e molho madeira.', preco: 58.50, imagem: 'images/file.jpg' },
-  { id: 4, nome: 'Petit Gâteau', desc: 'Bolo de chocolate com recheio cremoso, sorvete de creme e calda quente.', preco: 22.00, imagem: 'images/petit-gateau.jpg' },
-];
+// Cardápio agora vem do servidor (editável pelo painel admin)
+const socket = io();
+let itens = [];
+
+async function carregarCardapio() {
+  const resposta = await fetch('/api/itens');
+  itens = await resposta.json();
+  renderCardapio();
+}
+
+// Quando o admin adiciona/edita/remove um item, todo mundo com o site aberto
+// recebe a lista atualizada na hora, sem precisar recarregar a página
+socket.on('cardapio-atualizado', (itensAtualizados) => {
+  itens = itensAtualizados;
+  renderCardapio();
+});
 
 // Cada linha do carrinho é um pedido individual (permite observações diferentes pro mesmo prato)
 let carrinho = []; // [{ itemId, obs }]
@@ -20,7 +29,7 @@ const totalEl = document.getElementById('carrinho-total');
 const btnEnviar = document.getElementById('btn-enviar');
 
 function renderCardapio() {
-  cardapioEl.innerHTML = itens.map(item => `
+  cardapioEl.innerHTML = itens.filter(item => item.disponivel !== false).map(item => `
     <article class="card">
       <img class="card-img" src="${item.imagem}" alt="${item.nome}">
       <div class="card-body">
@@ -111,5 +120,5 @@ btnEnviar.addEventListener('click', async () => {
     btnEnviar.textContent = 'Confirmar pedido';
   }
 });
-renderCardapio();
+carregarCardapio();
 renderCarrinho();
